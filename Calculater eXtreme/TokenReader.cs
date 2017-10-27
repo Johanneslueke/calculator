@@ -10,7 +10,23 @@ namespace Calculater_eXtreme
     public class TokenReader
     {
         private readonly List<Token> ListOftokens = new List<Token>();
-        private int                   currentIndex = -1;
+        private int                  currentIndex = -1;
+
+        public Token Value
+        {
+            get
+            {
+                return ListOftokens[currentIndex];
+            }
+        }
+
+        public IEnumerable<Token> Stream
+        {
+            get
+            {
+                return ListOftokens;
+            }
+        }
 
         //Property
         public bool TokensAvailable

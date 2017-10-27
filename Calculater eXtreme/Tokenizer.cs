@@ -21,9 +21,165 @@ namespace Calculater_eXtreme
     //               "a" | "b" | "c" | "d" | "e" | "f" | "g"| "h" | "i" | "j" | "k" |
     //               "l" | "l" | "n"| "o"  | "p" | "q" | "r" | "s" | "t" | "u"| "v" |
     //               "w" | "x" | "y" | "z"  
-    class Tokenizer
+    class Tokenizer : IDisposable
     {
         private StringReader Stream; //emulates Stream of Characters
+        private RuleTable Rule;
+        private List<Token> tokens = new List<Token>();
+
+        public void Dispose() => Stream.Dispose();
+
+
+        public Tokenizer()
+        {
+            Rule = new RuleTable();
+            
+            Rule.Append("IgnoreWhiteSpaces", (RuleTable.fundamental)delegate (object c) {
+
+                if (Char.IsWhiteSpace((char)c))
+                {
+                    Stream.Read();
+                    return true;
+                }
+
+                return false;
+            });
+
+            Rule.Append("RecogniseNumber", (RuleTable.fundamental)delegate (object x) {
+                char c = (char) x;
+
+                if (Char.IsDigit(c) || c == ',')
+                {
+                    tokens.Add(new NumberToken(EvaluateNumberExpr()));
+                    return true;
+                }
+
+                return false;
+            });
+
+            Rule.Append("RecogniseOperatorMinus", (RuleTable.fundamental)delegate (object x) {
+                char c = (char)x;
+
+                if (c == '-')
+                {
+                    tokens.Add(new MinusToken());
+                    Stream.Read();
+                    return true;
+                }
+
+                return false;
+            });
+
+            Rule.Append("RecogniseOperatorPlus", (RuleTable.fundamental)delegate (object x) {
+                char c = (char)x;
+
+                if (c == '+')
+                {
+                    tokens.Add(new PlusToken());
+                    Stream.Read();
+                    return true;
+                }
+
+                return false;
+            });
+
+            Rule.Append("RecogniseOperatorMul", (RuleTable.fundamental)delegate (object x) {
+                char c = (char)x;
+
+                if (c == '*')
+                {
+                    tokens.Add(new MulToken());
+                    Stream.Read();
+                    return true;
+                }
+
+                return false;
+            });
+
+            Rule.Append("RecogniseOperatorDiv", (RuleTable.fundamental)delegate (object x) {
+                char c = (char)x;
+
+                if (c == '/')
+                {
+                    tokens.Add(new DivToken());
+                    Stream.Read();
+                    return true;
+                }
+
+                return false;
+            });
+
+            Rule.Append("RecogniseOperatorMod", (RuleTable.fundamental)delegate (object x) {
+                char c = (char)x;
+
+                if (c == '%')
+                {
+                    tokens.Add(new ModToken());
+                    Stream.Read();
+                    return true;
+                }
+
+                return false;
+            });
+
+            Rule.Append("RecogniseOperatorPow", (RuleTable.fundamental)delegate (object x) {
+                char c = (char)x;
+
+                if (c == '^')
+                {
+                    tokens.Add(new PowerToken());
+                    Stream.Read();
+                    return true;
+                }
+
+                return false;
+            });
+
+            Rule.Append("RecogniseParenthesis", (RuleTable.fundamental)delegate (object x)
+            {
+                char c = (char)x;
+                if (c == '(')
+                {
+                    tokens.Add(new OpenParenthesisToken());
+                    Stream.Read();
+                    return true;
+                }
+                else if (c == ')')
+                {
+                    tokens.Add(new ClosedParenthesisToken());
+                    Stream.Read();
+                    return true;
+                }
+
+                return false;
+
+            });
+
+            Rule.Append("RecogniseSymbol", (RuleTable.fundamental)delegate (object x) {
+
+                char c = (char)x;
+
+                if (c >= 'a' || c <= 'Z')
+                {
+                    //tokens.Add(new LetterToken(c));
+                    StringBuilder sym = new StringBuilder();
+                    while (Char.IsLetter((char)Stream.Peek()))
+                    {
+                        c = (char)Stream.Peek();
+                        sym.Append(c);
+                        Stream.Read();
+                    }
+                    tokens.Add(new SymbolToken(sym.ToString()));
+                    //Stream.Read();
+
+                    return true;
+                }
+
+                return false;
+
+            });
+
+        }
 
         //Scans an string and lists all found tokens which follow the 
         //coventinal rules known of mathematics. Might be possible
@@ -34,67 +190,22 @@ namespace Calculater_eXtreme
         public IEnumerable<Token> Scan(string expression)
         {
             Stream = new StringReader(expression);
-
-            var tokens = new List<Token>();
+            
             while (Stream.Peek() != -1)
             {
                 var c = (char)Stream.Peek();
-                if (Char.IsWhiteSpace(c)) //Ignore these nasty char no one can see
-                {
-                    Stream.Read();
+                if ((bool) Rule["IgnoreWhiteSpaces"](c)) 
                     continue;
-                }
 
-                if (Char.IsDigit(c) || c == ',')
-                {
-                    tokens.Add(new NumberToken(EvaluateNumberExpr()));
-                }
-                else if (c == '-')
-                {
-                    tokens.Add(new MinusToken());
-                    Stream.Read();
-                }
-                else if (c == '+')
-                {
-                    tokens.Add(new PlusToken());
-                    Stream.Read();
-                }
-                else if (c == '*')
-                {
-                    tokens.Add(new MultiplyToken());
-                    Stream.Read();
-                }
-                else if (c == '%')
-                {
-                    tokens.Add(new ModToken());
-                    Stream.Read();
-                }
-                else if (c == '/')
-                {
-                    tokens.Add(new DivideToken());
-                    Stream.Read();
-                }
-                else if (c == '(')
-                {
-                    tokens.Add(new OpenParenthesisToken());
-                    Stream.Read();
-                }
-                else if (c == ')')
-                {
-                    tokens.Add(new ClosedParenthesisToken());
-                    Stream.Read();
-                }
-                else if (c == '^')
-                {
-                    tokens.Add(new PowerToken());
-                    Stream.Read();
-                }
-                else if (c >= 'a' || c <= 'Z')
-                {
-                    tokens.Add(new LetterToken(c));
-                    Stream.Read();
-                }
-                else
+                if(!((bool) Rule["RecogniseNumber"](c)
+                 || (bool) Rule["RecogniseOperatorMinus"](c)
+                 || (bool) Rule["RecogniseOperatorPlus"](c)
+                 || (bool) Rule["RecogniseOperatorMul"](c)
+                 || (bool) Rule["RecogniseOperatorDiv"](c)
+                 || (bool) Rule["RecogniseOperatorMod"](c)
+                 || (bool) Rule["RecogniseOperatorPow"](c)
+                 || (bool) Rule["RecogniseParenthesis"](c)
+                 || (bool) Rule["RecogniseSymbol"](c)))
                     throw new Exception("Unknown character in expression: " + c);
             }
 

@@ -13,7 +13,8 @@ namespace Calculater_eXtreme
     //differentiating their different class Names. Through this
     //each kind of Token represent its own Identity within its 
     //class of Token. Only Exception is the NumberToken which 
-    //represent something very concrete: A Number!!!!
+    //represent something very concrete: A Number and a Type of Token
+
     public abstract class Token
     {
     }
@@ -45,11 +46,11 @@ namespace Calculater_eXtreme
     {
     }
 
-    public class MultiplyToken : OperatorToken
+    public class MulToken : OperatorToken
     {
     }
 
-    public class DivideToken : OperatorToken
+    public class DivToken : OperatorToken
     {
     }
 
@@ -61,6 +62,7 @@ namespace Calculater_eXtreme
     {
 
     }
+
 
     public class LetterToken : Token
     {
@@ -79,22 +81,17 @@ namespace Calculater_eXtreme
 
     public class SymbolToken : Token
     {
-        private readonly List<LetterToken>        mLetterToken;
+        private readonly String SymbolName;
 
-        public SymbolToken(List<LetterToken> value)
+        public SymbolToken(String value)
         {
-            mLetterToken = value;
+            SymbolName = value;
         }
 
         public String Value
         {
             get {
-                StringBuilder str = new StringBuilder();
-                foreach( var c in mLetterToken)
-                {
-                    str.Append(c.Value);
-                }
-                return str.ToString();
+                return SymbolName;
             }
         }
 

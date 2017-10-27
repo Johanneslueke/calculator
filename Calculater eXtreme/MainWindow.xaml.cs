@@ -29,6 +29,11 @@ namespace Calculater_eXtreme
 
             switch(sen.Name){
 
+                case "ButtonUndo":
+                    if(Expression.Length > 0)
+                        Expression.Remove(Expression.Length-1, 1);
+                    Output.Text = Expression.ToString();
+                    break;
                 case "Button1":
                     Expression.Append("1");
                     Output.Text = Expression.ToString();
@@ -185,8 +190,11 @@ namespace Calculater_eXtreme
                 {
                     try
                     {
-                        Output.Text = (new Parser(Expression.ToString()).EvalExpression()).ToString();
-                    }catch(Exception error)
+                        var ArithParser = (new Parser(Expression.ToString()));
+                        Output.Text = ArithParser.EVAL().ToString();
+                        OutputAst.Text = JsonHelper.FormatJson(ArithParser.ast);
+                    }
+                    catch(Exception error)
                     {
                         Console.WriteLine(error.ToString());
                         Output.Text = "";
