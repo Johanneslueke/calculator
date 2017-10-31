@@ -61,6 +61,9 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BrightSword.LightSaber">
+      <HintPath>BrightSword.LightSaber\bin\Debug\BrightSword.LightSaber.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -81,14 +84,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AST.cs" />
+    <Compile Include="ArithmeticRDP\AST\AST.cs" />
     <Compile Include="Class1.cs" />
-    <Compile Include="Parser.cs" />
-    <Compile Include="RuleTable.cs" />
-    <Compile Include="SymbolTable.cs" />
-    <Compile Include="Token.cs" />
-    <Compile Include="Tokenizer.cs" />
-    <Compile Include="TokenReader.cs" />
+    <Compile Include="ArithmeticRDP\Parser.cs" />
+    <Compile Include="ArithmeticRDP\RuleTable.cs" />
+    <Compile Include="ArithmeticRDP\SymbolTable.cs" />
+    <Compile Include="ArithmeticRDP\Token.cs" />
+    <Compile Include="ArithmeticRDP\Tokenizer.cs" />
+    <Compile Include="ArithmeticRDP\TokenReader.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -140,5 +143,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

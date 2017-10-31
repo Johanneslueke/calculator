@@ -10,7 +10,13 @@ namespace Calculater_eXtreme
     class SymbolTable
     {
         private OrderedDictionary Table;
+        private bool NeedsConversion;
         public delegate double function(double x);
+        public bool Radian
+        {
+            get => NeedsConversion;
+            set => NeedsConversion = value;
+        }
 
 
         public SymbolTable()
@@ -22,27 +28,57 @@ namespace Calculater_eXtreme
             });
             Table.Add("sin", (function)delegate (double x)
             {
-                return Math.Sin(x);
+                x = Math.Sin(x); ;
+                if (!Radian)
+                    x = (x * 180) / Math.PI; // Degree
+                else
+                    return x;
+                return x;
             });
             Table.Add("tan", (function)delegate (double x)
             {
-                return Math.Tan(x);
+                x = Math.Tan(x); ;
+                if (!Radian)
+                    x = (x * 180) / Math.PI; // Degree
+                else
+                    return x;
+                return x;
             });
             Table.Add("cos", (function)delegate (double x)
             {
-                return Math.Cos(x);
+                x = Math.Cos(x); ;
+                if (!Radian)
+                    x = (x * 180) / Math.PI; // Degree
+                else
+                    return x;
+                return x;
             });
             Table.Add("sinh", (function)delegate (double x)
             {
-                return Math.Sinh(x);
+                x = Math.Sinh(x); ;
+                if (!Radian)
+                    x = (x * 180) / Math.PI; // Degree
+                else
+                    return x;
+                return x;
             });
             Table.Add("cosh", (function)delegate (double x)
             {
-                return Math.Cosh(x);
+                x = Math.Cosh(x); ;
+                if (!Radian)
+                    x = (x * 180) / Math.PI; // Degree
+                else
+                    return x;
+                return x;
             });
             Table.Add("tanh", (function)delegate (double x)
             {
-                return Math.Tanh(x);
+                x = Math.Tanh(x); ;
+                if (!Radian)
+                    x = (x * 180) / Math.PI; // Degree
+                else
+                    return x;
+                return x;
             });
             Table.Add("ln", (function)delegate (double x)
             {

@@ -5,12 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Calculater_eXtreme"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="800">
+        Title="MainWindow" Height="350" Width="900">
     <DockPanel LastChildFill="True" >
         <Menu  DockPanel.Dock="Top">
             <MenuItem Header="File">
                 <MenuItem Header="save"></MenuItem>
                 <MenuItem Header="close" Click="MenuItem_Close_Click"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Script">
+                <MenuItem Header="save" Click="MenuItem_Click_Save"></MenuItem>
+                <MenuItem Header="load" Click="MenuItem_Click_Load"></MenuItem>
+                <MenuItem Header="compile" Click="MenuItem_Click_Compile"></MenuItem>
+               
             </MenuItem>
         </Menu>
         <TextBlock
@@ -18,47 +24,54 @@
             FontSize="16" FontFamily="Ariel"
            >Calculator eXtreme</TextBlock>
        
-        <TextBlock  Name="Output" DockPanel.Dock="Top"  Height="50"  FontSize="32" FontFamily="Consolas" TextAlignment="Right"></TextBlock>
+        <TextBlock  Name="Output" DockPanel.Dock="Top"  Height="45"  FontSize="32" FontFamily="Consolas" TextAlignment="Right"></TextBlock>
         <TabControl HorizontalContentAlignment="Left" VerticalContentAlignment="Top"  >
             <TabItem Header="Input">
                 <UniformGrid Columns="2">
-                    <UniformGrid Rows="4">
-                        <Button Margin="5" Name="Button7" Click="Button_Click" >7</Button>
-                        <Button Margin="5" Name="Button8" Click="Button_Click" >8</Button>
-                        <Button Margin="5" Name="Button9" Click="Button_Click" >9</Button>
-                        <Button Margin="5" Name="Button4" Click="Button_Click" >4</Button>
-                        <Button Margin="5" Name="Button5" Click="Button_Click" >5</Button>
-                        <Button Margin="5" Name="Button6" Click="Button_Click" >6</Button>
-                        <Button Margin="5" Name="Button1" Click="Button_Click" >1</Button>
-                        <Button Margin="5" Name="Button2" Click="Button_Click" >2</Button>
-                        <Button Margin="5" Name="Button3" Click="Button_Click" >3</Button>
-                        <Button Margin="5" Name="Button0" Click="Button_Click" >0</Button>
-                        <Button Margin="5" Name="ButtonComma" Click="Button_Click" >,</Button>
-                        <Button Margin="5" Name="ButtonReturn" Click="Button_Click" >=</Button>
+                    <GroupBox Margin="5" Header="Input">
+                        <UniformGrid Rows="4">
+                            <Button Margin="5" Name="Button7" Click="Button_Click" >7</Button>
+                            <Button Margin="5" Name="Button8" Click="Button_Click" >8</Button>
+                            <Button Margin="5" Name="Button9" Click="Button_Click" >9</Button>
+                            <Button Margin="5" Name="Button4" Click="Button_Click" >4</Button>
+                            <Button Margin="5" Name="Button5" Click="Button_Click" >5</Button>
+                            <Button Margin="5" Name="Button6" Click="Button_Click" >6</Button>
+                            <Button Margin="5" Name="Button1" Click="Button_Click" >1</Button>
+                            <Button Margin="5" Name="Button2" Click="Button_Click" >2</Button>
+                            <Button Margin="5" Name="Button3" Click="Button_Click" >3</Button>
+                            <Button Margin="5" Name="Button0" Click="Button_Click" >0</Button>
+                            <Button Margin="5" Name="ButtonComma" Click="Button_Click" >,</Button>
+                            <Button Margin="5" Name="ButtonReturn" Click="Button_Click" >=</Button>
 
 
-                    </UniformGrid>
-                    <UniformGrid Rows="4">
-                        <Button Margin="5" Name="ButtonClear" Click="Button_Click" >CLEAR</Button>
-                        <Button Margin="5" Name="ButtonUndo" Click="Button_Click" >Undo</Button>
-                        <Button Margin="5" Name="ButtonLParenthis" Click="Button_Click" >(</Button>
-                        <Button Margin="5" Name="ButtonRParenthis" Click="Button_Click" >)</Button>
+                        </UniformGrid>
+                    </GroupBox>
+                    <GroupBox Margin="5" Padding="5" Header="Arithmetic Expressions" >
+                        <UniformGrid Rows="4" Width="387">
+                            <Button Margin="5" Name="ButtonClear" Click="Button_Click" >CLEAR</Button>
+                            <Button Margin="5" Name="ButtonUndo" Click="Button_Click" >Undo</Button>
+                            <Button Margin="5" Name="ButtonConv" Click="Button_Click">rad->°</Button>
+                            
+                            <Button Margin="5" Name="ButtonLParenthis" Click="Button_Click" >(</Button>
+                            <Button Margin="5" Name="ButtonRParenthis" Click="Button_Click" >)</Button>
 
-                        <Button Margin="5" Name="ButtonSub" Click="Button_Click" >-</Button>
-                        <Button Margin="5" Name="ButtonMul" Click="Button_Click" >*</Button>
-                        <Button Margin="5" Name="ButtonDiv" Click="Button_Click" >/</Button>
-                        <Button Margin="5" Name="ButtonAdd" Click="Button_Click" >+</Button>
-                        <Button Margin="5" Name="ButtonPow" Click="Button_Click" >^</Button>
-                        <Button Margin="5" Name="ButtonMod" Click="Button_Click" >%</Button>
-                        <Button Margin="5" Name="ButtonSqrt" Click="Button_Click" >sqrt</Button>
+                            
+                            <Button Margin="5" Name="ButtonSub" Click="Button_Click" >-</Button>
+                            <Button Margin="5" Name="ButtonMul" Click="Button_Click" >*</Button>
+                            <Button Margin="5" Name="ButtonDiv" Click="Button_Click" >/</Button>
+                            <Button Margin="5" Name="ButtonAdd" Click="Button_Click" >+</Button>
+                            <Button Margin="5" Name="ButtonPow" Click="Button_Click" >^</Button>
+                            <Button Margin="5" Name="ButtonMod" Click="Button_Click" >%</Button>
+                            <Button Margin="5" Name="ButtonSqrt" Click="Button_Click" >sqrt</Button>
 
-                        <Button Margin="5" Name="ButtonSin" Click="Button_Click" >sin x</Button>
-                        <Button Margin="5" Name="ButtonCos" Click="Button_Click" >cos x</Button>
-                        <Button Margin="5" Name="ButtonTan" Click="Button_Click" >tan x</Button>
-                        <Button Margin="5" Name="ButtonSinH" Click="Button_Click" >sinh x</Button>
-                        <Button Margin="5" Name="ButtonCosH" Click="Button_Click" >cosh x</Button>
-                        <Button Margin="5" Name="ButtonTanH" Click="Button_Click" >tanh x</Button>
-                        <!--
+                            
+                            <Button Margin="5" Name="ButtonSin" Click="Button_Click" >sin x</Button>
+                            <Button Margin="5" Name="ButtonCos" Click="Button_Click" >cos x</Button>
+                            <Button Margin="5" Name="ButtonTan" Click="Button_Click" >tan x</Button>
+                            <Button Margin="5" Name="ButtonSinH" Click="Button_Click" >sinh x</Button>
+                            <Button Margin="5" Name="ButtonCosH" Click="Button_Click" >cosh x</Button>
+                            <Button Margin="5" Name="ButtonTanH" Click="Button_Click" >tanh x</Button>
+                            <!--
                 <Button Margin="5" Name="ButtonSinInv" Click="Button_Click" >Inv sin x</Button>
                 <Button Margin="5" Name="ButtonCosInv" Click="Button_Click" >Inv cos x</Button>
                 <Button Margin="5" Name="ButtonTanInv" Click="Button_Click" >Inv tan x</Button>
@@ -66,17 +79,26 @@
                 <Button Margin="5" Name="ButtonCosHInv" Click="Button_Click" >Inv cosh x</Button>
                 <Button Margin="5" Name="ButtonTanHInv" Click="Button_Click" >Inv tanh x</Button>
 -->
-                        <Button Margin="5" Name="ButtonLN" Click="Button_Click" >ln</Button>
-                        <Button Margin="5" Name="ButtonLog" Click="Button_Click" >log</Button>
-                        <Button Margin="5" Name="ButtonPi" Click="Button_Click" >Pi</Button>
-                        <Button Margin="5" Name="ButtonTau" Click="Button_Click" >Tau</Button>
-                        <Button Margin="5" Name="Button10" Click="Button_Click" >10^x</Button>
-                        <Button Margin="5" Name="ButtonPow2" Click="Button_Click" >x^2</Button>
-                        <Button Margin="5" Name="ButtonPow3" Click="Button_Click" >x^3</Button>
+                            <Button Margin="5" Name="ButtonLN" Click="Button_Click" >ln</Button>
+                            <Button Margin="5" Name="ButtonLog" Click="Button_Click" >log</Button>
+                            <Button Margin="5" Name="ButtonPi" Click="Button_Click" >Pi</Button>
+                            <Button Margin="5" Name="ButtonTau" Click="Button_Click" >Tau</Button>
+                            <Button Margin="5" Name="Button10" Click="Button_Click" >10^x</Button>
+                            <Button Margin="5" Name="ButtonPow2" Click="Button_Click" >x^2</Button>
+                            <Button Margin="5" Name="ButtonPow3" Click="Button_Click" >x^3</Button>
+
+                            <GroupBox >
+                                <StackPanel Orientation="Vertical">
+                                    <RadioButton Name="RADIAN" IsChecked="True" Checked="RADIAN_Checked">rad</RadioButton>
+                                    
+                                    <RadioButton Name="DEGREE"  Checked="DEGREE_Checked">°</RadioButton>
+                                </StackPanel>
+                            </GroupBox>
 
 
 
-                    </UniformGrid>
+                        </UniformGrid>
+                    </GroupBox>
 
                 </UniformGrid>
             </TabItem>
@@ -85,6 +107,9 @@
                     <TextBox  Name="OutputAst"  FontSize="32" FontFamily="Consolas" TextAlignment="Left"/>
                 </ScrollViewer>
                 
+            </TabItem>
+            <TabItem Header="Scripting Commandline Style" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <TextBox  Name="Script"  FontSize="32" FontFamily="Consolas" TextAlignment="Left"/>
             </TabItem>
         </TabControl>
         <!-- <UniformGrid DockPanel.Dock="Left" Rows="2">

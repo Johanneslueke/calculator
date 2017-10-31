@@ -12,9 +12,15 @@ namespace Calculater_eXtreme
         private OrderedDictionary Table;
         public delegate object fundamental(object condition);
 
-        public RuleTable()
+        public RuleTable() => Table = new OrderedDictionary();
+
+
+        public OrderedDictionary RawTable
         {
-            Table = new OrderedDictionary();
+            get
+            {
+                return Table;
+            }
         }
 
         public void Append(object Name,object Rule)

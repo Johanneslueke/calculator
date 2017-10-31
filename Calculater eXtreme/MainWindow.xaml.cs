@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +15,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using BrightSword.LightSaber;
+using BrightSword.LightSaber.Module;
+
 namespace Calculater_eXtreme
 {
     /// <summary>
@@ -21,6 +26,14 @@ namespace Calculater_eXtreme
     public partial class MainWindow : Window
     {
         private StringBuilder Expression;
+        private Interpreter Lisp = new Interpreter();
+        private bool hasConvert = false;
+
+        public bool Radian
+        {
+            get => hasConvert;
+            set => hasConvert = value;
+        }
 
         private void ConcatinateMathTerm(object sender) { 
             Button sen = sender as Button;
@@ -178,6 +191,14 @@ namespace Calculater_eXtreme
         {
             InitializeComponent();
             Expression = new StringBuilder();
+
+            Library.Load(typeof(LispCommon));
+            Library.Load(typeof(LispDate));
+            Library.Load(typeof(LispNumber));
+            Library.Load(typeof(LispBoolean));
+            Library.Load(typeof(LispCompare));
+            Library.Load(typeof(LispCore));
+            Library.Load(typeof(LispWPF));
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -191,7 +212,7 @@ namespace Calculater_eXtreme
                     try
                     {
                         var ArithParser = (new Parser(Expression.ToString()));
-                        Output.Text = ArithParser.EVAL().ToString();
+                        Output.Text = ArithParser.EvaluateExpression().ToString();
                         OutputAst.Text = JsonHelper.FormatJson(ArithParser.ast);
                     }
                     catch(Exception error)
@@ -208,6 +229,22 @@ namespace Calculater_eXtreme
             {
                 Expression.Clear();
                 Output.Text = Expression.ToString();
+            }else if(sender == ButtonConv)
+            {
+                if (!Radian)
+                {
+                    double value = double.Parse(Output.Text);
+                    value = (value * 180) / Math.PI;
+                    Output.Text = value.ToString();
+                    hasConvert = true;
+                }
+                else
+                {
+                    double value = double.Parse(Output.Text);
+                    value = (value * Math.PI ) /  180;
+                    Output.Text = value.ToString();
+                    hasConvert = false;
+                }
             }
                 
         }
@@ -215,6 +252,50 @@ namespace Calculater_eXtreme
         private void MenuItem_Close_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Application.Current.Shutdown();
+        }
+
+        private void MenuItem_Click_Compile(object sender, RoutedEventArgs e)
+        {
+            Script.Text = Lisp.Execute(Script.Text).ToString();
+        }
+
+        private void MenuItem_Click_Save(object sender, RoutedEventArgs e)
+        {
+            Console.Write(">> ");
+            while (true)
+            {
+                Console.WriteLine(Lisp.Execute(Console.ReadLine()).ToString());
+                Console.Write(">> ");
+            }
+        }
+
+
+
+        private void MenuItem_Click_Load(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog
+            {
+                InitialDirectory = "d:\\",
+                Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*",
+                FilterIndex = 2,
+                RestoreDirectory = true
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                String script =  File.ReadAllText(dialog.FileName);
+                Script.Text = script;
+            }
+        }
+
+        private void RADIAN_Checked(object sender, RoutedEventArgs e)
+        {
+            Radian = true;
+        }
+
+        private void DEGREE_Checked(object sender, RoutedEventArgs e)
+        {
+            Radian = false;
         }
     }
 }
