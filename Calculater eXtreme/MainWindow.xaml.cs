@@ -198,7 +198,7 @@ namespace Calculater_eXtreme
                     {
                        
                         Output.Text = ArithParser.EvaluateExpression(Expression.ToString()).ToString();
-                        OutputAst.Text = JsonHelper.FormatJson(ArithParser.ast);
+                        //OutputAst.Text = JsonHelper.FormatJson(ArithParser.ast);
                     }
                     catch(Exception error)
                     {
