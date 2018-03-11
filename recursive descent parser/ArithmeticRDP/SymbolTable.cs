@@ -15,7 +15,7 @@ namespace Calculater_eXtreme
          *         obvious stuff like calling stupid 
          *         Standard Constructors
          */
-        private OrderedDictionary Table = new OrderedDictionary();
+        private IDictionary<String,object> Table = new Dictionary<String,object>();
         private bool NeedsConversion = false;
         public delegate object function(params object[] x);
 
@@ -83,15 +83,12 @@ namespace Calculater_eXtreme
                 {
                     try
                     {
-                        Console.WriteLine(build.ToString());
                         Table.Add(NewSymbol.Value, (function)delegate (object[] xx) {
                             return new Parser(build.ToString()).EvaluateExpression();
                         });
                     }
                     catch (ArgumentException e)
                     {
-                        Console.WriteLine(e);
-                        Console.WriteLine("Replacing old definition with new one");
                         Table.Remove(NewSymbol.Value);
                         Table.Add(NewSymbol.Value, (function)delegate (object[] xx) {
                             return -1.0;

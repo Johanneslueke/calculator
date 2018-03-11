@@ -38,8 +38,8 @@ namespace Calculater_eXtreme
             }
         }
 
-        public OrderedDictionary GrammarRules {
-            get => Rule.RawTable;
+        public IDictionary<String,object> GrammarRules {
+            get => (IDictionary<String, object>)Rule.RawTable;
         }
 
         private void createAST()

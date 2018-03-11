@@ -10,7 +10,7 @@ namespace Calculater_eXtreme
 {
     class RuleTable : IDictionary<String,object>
     {
-        private OrderedDictionary Table  = new OrderedDictionary();
+        private IDictionary<object,object> Table  = new Dictionary<object,object>();
 
         public delegate object fundamental(params object[] condition);
 
@@ -31,7 +31,7 @@ namespace Calculater_eXtreme
                 throw new ArgumentException((max - min) + " Argument expected but received " + given);
         }
 
-        public OrderedDictionary RawTable
+        public IDictionary<object,object> RawTable
         {
             get
             {
@@ -59,7 +59,7 @@ namespace Calculater_eXtreme
 
         public bool ContainsKey(string key)
         {
-            return Table.Contains(key);
+            return Table.ContainsKey(key);
         }
 
         public void Add(string key, object value)
@@ -93,12 +93,13 @@ namespace Calculater_eXtreme
 
         public bool Contains(KeyValuePair<string, object> item)
         {
-            return Table.Contains(item.Key);
+            return Table.ContainsKey(item.Key);
         }
 
-        public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
+        public void CopyTo(KeyValuePair<String, object>[] array, int arrayIndex)
         {
-            Table.CopyTo(array, arrayIndex);
+            KeyValuePair<object, object>[] t = (KeyValuePair<object, object>[])array.Clone();
+            Table.CopyTo(t, arrayIndex);
         }
 
         public bool Remove(KeyValuePair<string, object> item)
