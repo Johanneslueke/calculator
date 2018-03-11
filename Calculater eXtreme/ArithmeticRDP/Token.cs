@@ -40,27 +40,70 @@ namespace Calculater_eXtreme
     }
     public class PlusToken : OperatorToken
     {
+        public String Value
+        {
+            get => "+";
+        }
     }
 
     public class MinusToken : OperatorToken
     {
+        public String Value
+        {
+            get => "-";
+        }
     }
 
     public class MulToken : OperatorToken
     {
+        public String Value
+        {
+            get => "*";
+        }
     }
 
     public class DivToken : OperatorToken
     {
+        public String Value
+        {
+            get => "/";
+        }
     }
 
     public class ModToken : OperatorToken
     {
-
+        public String Value
+        {
+            get => "%";
+        }
     }
     public class PowerToken : OperatorToken
     {
+        public String Value
+        {
+            get => "^";
+        }
+    }
 
+    public class SeperatorToken : Token
+    {
+
+    }
+
+    public class CommaToken : SeperatorToken
+    {
+        public String Value
+        {
+            get => ",";
+        }
+    }
+
+    public class SemiColonToken : SeperatorToken
+    {
+        public String Value
+        {
+            get => ";";
+        }
     }
 
 
@@ -97,6 +140,25 @@ namespace Calculater_eXtreme
 
     }
 
+    public class ExpressionToken : Token
+    {
+        private readonly String Expression;
+
+        public ExpressionToken(String value)
+        {
+            Expression = value;
+        }
+
+        public String Value
+        {
+            get
+            {
+                return Expression;
+            }
+        }
+
+    }
+
 
     public class ParenthesisToken : Token
     {
@@ -105,11 +167,52 @@ namespace Calculater_eXtreme
 
     public class OpenParenthesisToken : ParenthesisToken
     {
+        public String Value
+        {
+            get => "(";
+        }
     }
 
     public class ClosedParenthesisToken : ParenthesisToken
     {
+        public String Value
+        {
+            get => ")";
+        }
     }
 
-    
+    public class OpenCurlyParenthesisToken : ParenthesisToken
+    {
+        public String Value
+        {
+            get => "{";
+        }
+    }
+
+    public class ClosedCurlyParenthesisToken : ParenthesisToken
+    {
+        public String Value
+        {
+            get => "}";
+        }
+    }
+
+    public class OpenSquaredParenthesisToken : ParenthesisToken
+    {
+        public String Value
+        {
+            get => "[";
+        }
+    }
+
+    public class ClosedSquaredParenthesisToken : ParenthesisToken
+    {
+        public String Value
+        {
+            get => "]";
+        }
+    }
+
+
+
 }

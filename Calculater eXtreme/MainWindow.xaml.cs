@@ -15,8 +15,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using BrightSword.LightSaber;
-using BrightSword.LightSaber.Module;
 
 namespace Calculater_eXtreme
 {
@@ -26,7 +24,8 @@ namespace Calculater_eXtreme
     public partial class MainWindow : Window
     {
         private StringBuilder Expression;
-        private Interpreter Lisp = new Interpreter();
+       // private Interpreter Lisp = new Interpreter();
+        private Parser ArithParser = new Parser("");
         private bool hasConvert = false;
 
         public bool Radian
@@ -88,7 +87,7 @@ namespace Calculater_eXtreme
                     Output.Text = Expression.ToString();
                     break;
                 case "ButtonComma":
-                    Expression.Append(",");
+                    Expression.Append(".");
                     Output.Text = Expression.ToString();
                     break;
 
@@ -142,7 +141,7 @@ namespace Calculater_eXtreme
                     Output.Text = Expression.ToString();
                     break;
                 case "ButtonTau":
-                    Expression.Append("tau");
+                    Expression.Append("tau(");
                     Output.Text = Expression.ToString();
                     break;
                 case "ButtonSin":
@@ -192,13 +191,7 @@ namespace Calculater_eXtreme
             InitializeComponent();
             Expression = new StringBuilder();
 
-            Library.Load(typeof(LispCommon));
-            Library.Load(typeof(LispDate));
-            Library.Load(typeof(LispNumber));
-            Library.Load(typeof(LispBoolean));
-            Library.Load(typeof(LispCompare));
-            Library.Load(typeof(LispCore));
-            Library.Load(typeof(LispWPF));
+           
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -211,8 +204,8 @@ namespace Calculater_eXtreme
                 {
                     try
                     {
-                        var ArithParser = (new Parser(Expression.ToString()));
-                        Output.Text = ArithParser.EvaluateExpression().ToString();
+                       
+                        Output.Text = ArithParser.EvaluateExpression(Expression.ToString()).ToString();
                         OutputAst.Text = JsonHelper.FormatJson(ArithParser.ast);
                     }
                     catch(Exception error)
@@ -256,17 +249,22 @@ namespace Calculater_eXtreme
 
         private void MenuItem_Click_Compile(object sender, RoutedEventArgs e)
         {
-            Script.Text = Lisp.Execute(Script.Text).ToString();
+            Expression.Append(Script.ToString().Substring(32));
+
+            try
+            {
+                Output.Text = ArithParser.EvaluateExpression(Expression.ToString()).ToString();
+            }catch(Exception error)
+            {
+                Console.WriteLine(error.ToString());
+                Output.Text = "";
+            }
+            Expression.Clear();
         }
 
         private void MenuItem_Click_Save(object sender, RoutedEventArgs e)
         {
-            Console.Write(">> ");
-            while (true)
-            {
-                Console.WriteLine(Lisp.Execute(Console.ReadLine()).ToString());
-                Console.Write(">> ");
-            }
+           
         }
 
 

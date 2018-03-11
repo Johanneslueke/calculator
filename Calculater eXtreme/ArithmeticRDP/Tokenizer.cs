@@ -24,19 +24,18 @@ namespace Calculater_eXtreme
     class Tokenizer : IDisposable
     {
         private StringReader Stream; //emulates Stream of Characters
-        private RuleTable Rule;
+        private RuleTable Rule = new RuleTable();
         private List<Token> tokens = new List<Token>();
 
         public void Dispose() => Stream.Dispose();
 
 
         public Tokenizer()
-        {
-            Rule = new RuleTable();
-            
-            Rule.Append("IgnoreWhiteSpaces", (RuleTable.fundamental)delegate (object c) {
+        {            
+            Rule.Append("IgnoreWhiteSpaces", (RuleTable.fundamental)delegate (object[] c) {
 
-                if (Char.IsWhiteSpace((char)c))
+                Rule.CheckNumberOfArgs(1, 1, c.Length);
+                if (Char.IsWhiteSpace((char)c[0]))
                 {
                     Stream.Read();
                     return true;
@@ -45,8 +44,9 @@ namespace Calculater_eXtreme
                 return false;
             });
 
-            Rule.Append("RecogniseNumber", (RuleTable.fundamental)delegate (object x) {
-                char c = (char) x;
+            Rule.Append("RecogniseNumber", (RuleTable.fundamental)delegate (object[] x) {
+                Rule.CheckNumberOfArgs(1, 1, x.Length);
+                char c = (char) x[0];
 
                 if (Char.IsDigit(c) || c == ',')
                 {
@@ -57,8 +57,9 @@ namespace Calculater_eXtreme
                 return false;
             });
 
-            Rule.Append("RecogniseOperatorMinus", (RuleTable.fundamental)delegate (object x) {
-                char c = (char)x;
+            Rule.Append("RecogniseOperatorMinus", (RuleTable.fundamental)delegate (object[] x) {
+                Rule.CheckNumberOfArgs(1, 1, x.Length);
+                char c = (char)x[0];
 
                 if (c == '-')
                 {
@@ -70,8 +71,9 @@ namespace Calculater_eXtreme
                 return false;
             });
 
-            Rule.Append("RecogniseOperatorPlus", (RuleTable.fundamental)delegate (object x) {
-                char c = (char)x;
+            Rule.Append("RecogniseOperatorPlus", (RuleTable.fundamental)delegate (object[] x) {
+                Rule.CheckNumberOfArgs(1, 1, x.Length);
+                char c = (char)x[0];
 
                 if (c == '+')
                 {
@@ -83,8 +85,9 @@ namespace Calculater_eXtreme
                 return false;
             });
 
-            Rule.Append("RecogniseOperatorMul", (RuleTable.fundamental)delegate (object x) {
-                char c = (char)x;
+            Rule.Append("RecogniseOperatorMul", (RuleTable.fundamental)delegate (object[] x) {
+                Rule.CheckNumberOfArgs(1, 1, x.Length);
+                char c = (char)x[0];
 
                 if (c == '*')
                 {
@@ -96,8 +99,9 @@ namespace Calculater_eXtreme
                 return false;
             });
 
-            Rule.Append("RecogniseOperatorDiv", (RuleTable.fundamental)delegate (object x) {
-                char c = (char)x;
+            Rule.Append("RecogniseOperatorDiv", (RuleTable.fundamental)delegate (object[] x) {
+                Rule.CheckNumberOfArgs(1, 1, x.Length);
+                char c = (char)x[0];
 
                 if (c == '/')
                 {
@@ -109,8 +113,9 @@ namespace Calculater_eXtreme
                 return false;
             });
 
-            Rule.Append("RecogniseOperatorMod", (RuleTable.fundamental)delegate (object x) {
-                char c = (char)x;
+            Rule.Append("RecogniseOperatorMod", (RuleTable.fundamental)delegate (object[] x) {
+                Rule.CheckNumberOfArgs(1, 1, x.Length);
+                char c = (char)x[0];
 
                 if (c == '%')
                 {
@@ -122,8 +127,9 @@ namespace Calculater_eXtreme
                 return false;
             });
 
-            Rule.Append("RecogniseOperatorPow", (RuleTable.fundamental)delegate (object x) {
-                char c = (char)x;
+            Rule.Append("RecogniseOperatorPow", (RuleTable.fundamental)delegate (object[] x) {
+                Rule.CheckNumberOfArgs(1, 1, x.Length);
+                char c = (char)x[0];
 
                 if (c == '^')
                 {
@@ -135,9 +141,10 @@ namespace Calculater_eXtreme
                 return false;
             });
 
-            Rule.Append("RecogniseParenthesis", (RuleTable.fundamental)delegate (object x)
+            Rule.Append("RecogniseParenthesis", (RuleTable.fundamental)delegate (object[] x)
             {
-                char c = (char)x;
+                Rule.CheckNumberOfArgs(1, 1, x.Length);
+                char c = (char)x[0];
                 if (c == '(')
                 {
                     tokens.Add(new OpenParenthesisToken());
@@ -151,13 +158,39 @@ namespace Calculater_eXtreme
                     return true;
                 }
 
+                if (c == '{')
+                {
+                    tokens.Add(new OpenCurlyParenthesisToken());
+                    Stream.Read();
+                    return true;
+                }
+                else if (c == '}')
+                {
+                    tokens.Add(new ClosedCurlyParenthesisToken());
+                    Stream.Read();
+                    return true;
+                }
+
+                if (c == '[')
+                {
+                    tokens.Add(new OpenSquaredParenthesisToken());
+                    Stream.Read();
+                    return true;
+                }
+                else if (c == ']')
+                {
+                    tokens.Add(new ClosedSquaredParenthesisToken());
+                    Stream.Read();
+                    return true;
+                }
+
                 return false;
 
             });
 
-            Rule.Append("RecogniseSymbol", (RuleTable.fundamental)delegate (object x) {
-
-                char c = (char)x;
+            Rule.Append("RecogniseSymbol", (RuleTable.fundamental)delegate (object[] x) {
+                Rule.CheckNumberOfArgs(1, 1, x.Length);
+                char c = (char)x[0];
 
                 if (c >= 'a' || c <= 'Z')
                 {
@@ -178,6 +211,8 @@ namespace Calculater_eXtreme
                 return false;
 
             });
+
+           
 
         }
 
@@ -217,10 +252,10 @@ namespace Calculater_eXtreme
         {
             var sb = new StringBuilder();
             var decimalExists = false;
-            while (Char.IsDigit((char)Stream.Peek()) || ((char)Stream.Peek() == ','))
+            while (Char.IsDigit((char)Stream.Peek()) || ((char)Stream.Peek() == '.'))
             {
                 var digit = (char)Stream.Read();
-                if (digit == ',')
+                if (digit == '.')
                 {
                     if (decimalExists) throw new Exception("Multiple comma in decimal number");
                     decimalExists = true;

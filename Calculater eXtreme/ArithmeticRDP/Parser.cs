@@ -24,11 +24,11 @@ namespace Calculater_eXtreme
 
     public class Parser
     {
-        private readonly string expression;
-        private StringBuilder AST;
-        private readonly TokenReader TokenStream;
-        private readonly SymbolTable SymTable;
-        private readonly RuleTable Rule;
+        private string expression;
+        private StringBuilder AST  = new StringBuilder();
+        private TokenReader TokenStream;
+        private readonly SymbolTable SymTable = new SymbolTable();
+        private readonly RuleTable Rule = new RuleTable();
        
         public String ast
         {
@@ -91,19 +91,18 @@ namespace Calculater_eXtreme
         {
             this.expression = expression;
             TokenStream = new TokenReader(new Tokenizer().Scan(this.expression));
-            SymTable = new SymbolTable();
-            Rule = new RuleTable();
-            AST = new StringBuilder();
-            createAST();
 
-
-            Rule.Append("Expression", (RuleTable.fundamental)delegate (object x)
-             { 
+            Rule.Append("Expression", (RuleTable.fundamental)delegate (object[] x)
+             {
+                 if (NextIs(typeof(SymbolToken)))
+                 {
+                     return Rule["Symbol"](); ;
+                 }
                  bool isNegative = NextIsMinus();
                  if (isNegative)
                      TokenStream.GetNext();
 
-                 double valueOfExpression = (double) Rule["Term"](x);
+                 double valueOfExpression = (double)Rule["Term"](x);
                  if (isNegative)//Set us the proper signess of our number we found
                      valueOfExpression = -valueOfExpression;
 
@@ -115,13 +114,13 @@ namespace Calculater_eXtreme
 
                      if (Operator is PlusToken)
                          valueOfExpression += ValueOfTerm;
-                     else if(Operator is MinusToken)
+                     else if (Operator is MinusToken)
                          valueOfExpression -= ValueOfTerm;
                  }
                  return valueOfExpression;
              });
 
-            Rule.Append("Term", (RuleTable.fundamental)delegate (object x)
+            Rule.Append("Term", (RuleTable.fundamental)delegate (object[] x)
             {
                 double totalVal = (double)Rule["Factor"](x);
 
@@ -144,14 +143,14 @@ namespace Calculater_eXtreme
                 return totalVal;
             });
 
-            Rule.Append("Factor", (RuleTable.fundamental)delegate (object x)
+            Rule.Append("Factor", (RuleTable.fundamental)delegate (object[] x)
             {
-               
-                var isNumber =  Rule["RealNumber"](x);
+
+                var isNumber = Rule["RealNumber"](x);
                 if (isNumber != null)
                     return isNumber;
 
-                var isSymbol =  Rule["Symbol"](x);
+                var isSymbol = Rule["Symbol"](x);
                 if (isSymbol != null)
                     return isSymbol;
 
@@ -160,11 +159,11 @@ namespace Calculater_eXtreme
                 double val = (double)Rule["Expression"](x);
                 CheckCloseBracket();
                 TokenStream.GetNext(); // Consume Evaluated Token
-              
+
                 return val;
             });
 
-            Rule.Append("RealNumber", (RuleTable.fundamental)delegate (object x)
+            Rule.Append("RealNumber", (RuleTable.fundamental)delegate (object[] x)
             {
                 if (NextIsDigit())
                 {
@@ -181,7 +180,18 @@ namespace Calculater_eXtreme
                    
             });
 
-            Rule.Append("Symbol", (RuleTable.fundamental)delegate (object x)
+            Rule.Append("Paramter", (RuleTable.fundamental) delegate (object[] x)
+            {
+                Rule.CheckNumberOfArgs(0, 256,x.Length);
+
+                while(!NextIsClosingBracket() || NextIs(typeof(CommaToken)))
+                {
+                    return Rule["Expression"](x);
+                }
+                return null;
+            });
+
+            Rule.Append("Symbol", (RuleTable.fundamental)delegate (object[] x)
             {
                 if (!NextIsOpeningBracket() || NextIsSymbol())
                 {
@@ -189,14 +199,29 @@ namespace Calculater_eXtreme
 
                     double val = 0;
 
-                    if (NextIsParamterExpr() && !NextIsClosingBracket()) //decides syntax between Symbol Constant and Symbol Function !!!
+
+                    if (NextIs(typeof(SymbolToken)))
                     {
+                        List<Token> args = new List<Token>();
+                        while (TokenStream.TokensAvailable)
+                        {
+                            args.Add(TokenStream.GetNext());
+                        }
+                        return SymTable[Symbol.Value](args.ToArray());
+                    }
+
+                    //decides syntax between Symbol Constant and Symbol Function !!!
+                    //If ParameterExpression is found because after the Symbol we 
+                    //found a open Parentethis
+                    if (NextIsParamterExpr() && !NextIsClosingBracket())
+                    {
+
                         CheckOpenBracket();
-                        val = (double)Rule["Expression"](x); // Consumes ")"
+                        val = (double)Rule["Paramter"](x); // Consumes ")"
                     }
                     else
                     {
-                        var res = SymTable[Symbol.Value](0);
+                        var res = SymTable[Symbol.Value]();
 
                         return res;
                     }
@@ -212,7 +237,20 @@ namespace Calculater_eXtreme
 
         public double EvaluateExpression()
         {
-            return (double) Rule["Expression"](null);
+            var res = Rule["Expression"]();
+            if (res is double)
+                return (double)res;
+            return 0;
+        }
+
+        public double EvaluateExpression(string expr)
+        {
+             expression = expr;
+            TokenStream = new TokenReader(new Tokenizer().Scan(this.expression));
+            object res = Rule["Expression"]();
+            if (!(res is Token))
+                return (Double)res;
+            return 0;
         }
 
 
@@ -276,7 +314,7 @@ namespace Calculater_eXtreme
 
         private bool NextIsParamterExpr()
         {
-            return TokenStream.TokensAvailable && !NextIsNotSummation() ;
+            return TokenStream.TokensAvailable && NextIsOpeningBracket() ;
         }
 
         private void CheckOpenBracket()
