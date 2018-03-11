@@ -39,9 +39,9 @@ namespace Calculater_eXtreme
             }
         }
 
-        public ICollection<string> Keys => throw new NotImplementedException();
+        public ICollection<string> Keys => (ICollection<string>)Table.Keys;
 
-        public ICollection<object> Values => throw new NotImplementedException();
+        public ICollection<object> Values => Table.Values;
 
         public int Count => Table.Count;
 
