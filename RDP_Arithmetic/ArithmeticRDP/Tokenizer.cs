@@ -259,10 +259,10 @@ namespace Calculater_eXtreme
         {
             var sb = new StringBuilder();
             var decimalExists = false;
-            while (Char.IsDigit((char)Stream.Peek()) || ((char)Stream.Peek() == '.'))
+            while (Char.IsDigit((char)Stream.Peek()) || ((char)Stream.Peek() == ',') || ((char)Stream.Peek() == '.'))
             {
                 var digit = (char)Stream.Read();
-                if (digit == '.')
+                if (digit == ',' || digit == '.')
                 {
                     if (decimalExists) throw new Exception("Multiple comma in decimal number");
                     decimalExists = true;
@@ -270,7 +270,7 @@ namespace Calculater_eXtreme
                 sb.Append(digit);
             }
 
-            double res;
+            double res=0;
             if (!double.TryParse(sb.ToString(), out res))
                 throw new Exception("Could not parse number: " + sb);
 

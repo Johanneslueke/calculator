@@ -108,10 +108,10 @@ namespace Calculater_eXtreme
 
             Rule.Append("Expression", (RuleTable.fundamental)delegate (object[] x)
              {
-                 if (NextIs(typeof(SymbolToken)))
+                /* if (NextIs(typeof(SymbolToken)))
                  {
                      return Rule["Symbol"](); ;
-                 }
+                 }*/
                  bool isNegative = NextIsMinus();
                  if (isNegative)
                      TokenStream.GetNext();
@@ -179,17 +179,24 @@ namespace Calculater_eXtreme
 
             Rule.Append("RealNumber", (RuleTable.fundamental)delegate (object[] x)
             {
-                if (NextIsDigit())
+                if (!NextIsDigit() && x.Length < 0)
+                    return Rule["Expression"](x);
+
+                if (x.Length == 0)
                 {
-                    var next = TokenStream.GetNext();
+                    if (NextIsDigit())
+                    {
+                        var next = TokenStream.GetNext();
 
-                    var nr = next as NumberToken;
-                    if (nr == null)
-                        throw new Exception("Expecting Real number but got " + next);
+                        var nr = next as NumberToken;
+                        if (nr == null)
+                            throw new Exception("Expecting Real number but got " + next);
 
-                    return nr.Value;
+                        return nr.Value;
+                    }
                 }
 
+                //throw new Exception("Next Token was not a RealNumber: " + x[0]);
                 return null;
                    
             });
@@ -198,8 +205,10 @@ namespace Calculater_eXtreme
             {
                 Rule.CheckNumberOfArgs(0, 256,x.Length);
 
-                while(!NextIsClosingBracket() || NextIs(typeof(CommaToken)))
+                while(!NextIsClosingBracket() /*|| NextIs(typeof(CommaToken))*/)
                 {
+                    if (NextIsOpeningBracket())
+                        TokenStream.GetNext();
                     return Rule["Expression"](x);
                 }
                 return null;
@@ -207,45 +216,56 @@ namespace Calculater_eXtreme
 
             Rule.Append("Symbol", (RuleTable.fundamental)delegate (object[] x)
             {
-                if (!NextIsOpeningBracket() || NextIsSymbol())
+                if (NextIsSymbol())
+                {
+                    
+                    SymbolToken sym = TokenStream.GetNext() as SymbolToken;
+                    
+
+                    if (NextIsOpeningBracket())
+                    {
+                        
+                        var res = (double)Rule["Expression"]();
+                        return SymTable[sym.Value](res);
+                    }
+
+
+                    return SymTable[sym.Value]();
+                }
+
+                return null;
+                    
+            });
+            /**
+             * if (!NextIsOpeningBracket() && NextIsSymbol())
                 {
                     SymbolToken Symbol = TokenStream.GetNext() as SymbolToken;
-
                     double val = 0;
-
-
-                    if (NextIs(typeof(SymbolToken)))
-                    {
-                        List<Token> args = new List<Token>();
-                        while (TokenStream.TokensAvailable)
-                        {
-                            args.Add(TokenStream.GetNext());
-                        }
-                        return SymTable[Symbol.Value](args.ToArray());
-                    }
+                    double param = 0;
 
                     //decides syntax between Symbol Constant and Symbol Function !!!
                     //If ParameterExpression is found because after the Symbol we 
                     //found a open Parentethis
                     if (NextIsParamterExpr() && !NextIsClosingBracket())
                     {
-
-                        CheckOpenBracket();
-                        val = (double)Rule["Paramter"](x); // Consumes ")"
+                        if (NextIsSymbol())
+                        {
+                            SymbolToken ParamSymbol = TokenStream.GetNext() as SymbolToken;
+                            if (NextIsClosingBracket())
+                                param = (double)SymTable[ParamSymbol.Value]();
+                            else
+                                param = (double)Rule["Expression"]();
+                            param = (double)SymTable[ParamSymbol.Value]();
+                        }
+                        TokenStream.GetNext();
                     }
                     else
                     {
-                        var res = SymTable[Symbol.Value]();
-
+                        var res = (double)SymTable[Symbol.Value]();
                         return res;
                     }
-
-                    return SymTable[Symbol.Value](val); ;
                 }
-
-                return null;
-                    
-            });
+             */
 
         }
 

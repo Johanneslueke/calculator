@@ -136,7 +136,7 @@ namespace Calculater_eXtreme
                     Output.Text = Expression.ToString();
                     break;
                 case "ButtonTau":
-                    Expression.Append("tau(");
+                    Expression.Append("tau");
                     Output.Text = Expression.ToString();
                     break;
                 case "ButtonSin":

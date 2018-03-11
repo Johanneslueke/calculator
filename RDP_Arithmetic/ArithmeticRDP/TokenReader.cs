@@ -74,6 +74,15 @@ namespace Calculater_eXtreme
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        public void PushBack(Token token)
+        {
+            ListOftokens.Insert(currentIndex, token);
+        }
+
+        /// <summary>
         /// This we need otherwise our Tagdispatching would be for nothing!
         /// it checks which Type(Tag) we have next so we can determine somewhere
         /// else what todo next!!!

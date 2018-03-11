@@ -89,6 +89,11 @@ namespace TEST_RDP_Arithmetic
                     {
                         new NumberToken(4),
                     }),
+
+                    new KeyValuePair<string, List<Token>>(Math.PI.ToString(), new List<Token>
+                    {
+                        new NumberToken(Math.PI),
+                    }),
                     new KeyValuePair<string, List<Token>>("sin(1)", new List<Token>
                     {
                         new SymbolToken("sin"),
