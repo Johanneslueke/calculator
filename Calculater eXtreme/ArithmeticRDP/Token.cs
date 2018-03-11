@@ -38,6 +38,7 @@ namespace Calculater_eXtreme
     {
 
     }
+
     public class PlusToken : OperatorToken
     {
         public String Value
@@ -77,6 +78,7 @@ namespace Calculater_eXtreme
             get => "%";
         }
     }
+
     public class PowerToken : OperatorToken
     {
         public String Value
@@ -105,7 +107,6 @@ namespace Calculater_eXtreme
             get => ";";
         }
     }
-
 
     public class LetterToken : Token
     {
@@ -158,7 +159,6 @@ namespace Calculater_eXtreme
         }
 
     }
-
 
     public class ParenthesisToken : Token
     {
