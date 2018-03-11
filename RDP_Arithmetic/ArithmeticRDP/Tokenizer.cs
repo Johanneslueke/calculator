@@ -24,7 +24,7 @@ namespace Calculater_eXtreme
     ///               "l" | "l" | "n"| "o"  | "p" | "q" | "r" | "s" | "t" | "u"| "v" |
     ///               "w" | "x" | "y" | "z"  
     /// </summary>
-    class Tokenizer : IDisposable
+    public class Tokenizer : IDisposable
     {
         private StringReader Stream; //emulates Stream of Characters
         private RuleTable Rule = new RuleTable();
