@@ -20,6 +20,9 @@ namespace Calculater_eXtreme
         private Parser ArithParser = new Parser("");
         private bool hasConvert = false;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool Radian
         {
             get => hasConvert;
@@ -177,7 +180,9 @@ namespace Calculater_eXtreme
             }
  
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();

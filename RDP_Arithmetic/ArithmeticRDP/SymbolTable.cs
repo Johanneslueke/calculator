@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Calculater_eXtreme
 {
+    /// <summary>
+    /// 
+    /// </summary>
     class SymbolTable
     {
         /*

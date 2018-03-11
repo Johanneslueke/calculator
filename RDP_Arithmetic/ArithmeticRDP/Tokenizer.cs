@@ -7,20 +7,23 @@ using System.IO;
 
 namespace Calculater_eXtreme
 {
-    //Recursive Descent Parser for Arithmetic Expressions:
-    //
-    // Expression := [ "-" ] Term { ("+" | "-") Term }
-    // Term       := Factor> { ( "*" | "/" | "^" ) Factor }
-    // Factor     := RealNumber | "(" Expression ")"
-    // RealNumber := Digit{Digit} | [Digit] "," {Digit}
-    // Symbol     := Letter | Letter,Digit | "(" Expression ")"
-    // Digit      := "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" 
-    // Letter     := "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" |
-    //               "L" | "M" | "N"| "O"  | "P" | "Q" | "R" | "S" | "T" | "U"| "V" |
-    //               "W" | "X" | "Y" | "Z" |
-    //               "a" | "b" | "c" | "d" | "e" | "f" | "g"| "h" | "i" | "j" | "k" |
-    //               "l" | "l" | "n"| "o"  | "p" | "q" | "r" | "s" | "t" | "u"| "v" |
-    //               "w" | "x" | "y" | "z"  
+    /// <summary>
+    /// 
+    ///Recursive Descent Parser for Arithmetic Expressions:
+    ///
+    /// Expression := [ "-" ] Term { ("+" | "-") Term }
+    /// Term       := Factor> { ( "*" | "/" | "^" ) Factor }
+    /// Factor     := RealNumber | "(" Expression ")"
+    /// RealNumber := Digit{Digit} | [Digit] "," {Digit}
+    /// Symbol     := Letter | Letter,Digit | "(" Expression ")"
+    /// Digit      := "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" 
+    ///
+    ///               "L" | "M" | "N"| "O"  | "P" | "Q" | "R" | "S" | "T" | "U"| "V" |
+    ///               "W" | "X" | "Y" | "Z" |
+    ///               "a" | "b" | "c" | "d" | "e" | "f" | "g"| "h" | "i" | "j" | "k" |
+    ///               "l" | "l" | "n"| "o"  | "p" | "q" | "r" | "s" | "t" | "u"| "v" |
+    ///               "w" | "x" | "y" | "z"  
+    /// </summary>
     class Tokenizer : IDisposable
     {
         private StringReader Stream; //emulates Stream of Characters
@@ -213,12 +216,16 @@ namespace Calculater_eXtreme
             });
         }
 
-        //Scans an string and lists all found tokens which follow the 
-        //coventinal rules known of mathematics. Might be possible
-        //to actually merge both the scan and the evalutation into one
-        //Function so you it might saves you from the TagDispatching 
-        //mechanism. But for simpler extensibilty  it might be nice to
-        //be able to split those two task!
+        /// <summary>
+        /// Scans an string and lists all found tokens which follow the 
+        /// coventinal rules known of mathematics. Might be possible
+        /// to actually merge both the scan and the evalutation into one
+        /// Function so you it might saves you from the TagDispatching 
+        /// mechanism. But for simpler extensibilty  it might be nice to
+        /// be able to split those two task!
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <returns></returns>
         public IEnumerable<Token> Scan(string expression)
         {
             Stream = new StringReader(expression);
@@ -244,7 +251,10 @@ namespace Calculater_eXtreme
             return tokens;
         }
 
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         private double EvaluateNumberExpr()
         {
             var sb = new StringBuilder();

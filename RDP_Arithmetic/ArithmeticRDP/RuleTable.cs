@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Calculater_eXtreme
 {
+    /// <summary>
+    /// 
+    /// </summary>
     class RuleTable : IDictionary<String,object>
     {
         private IDictionary<object,object> Table  = new Dictionary<object,object>();
