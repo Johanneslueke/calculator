@@ -211,9 +211,6 @@ namespace Calculater_eXtreme
                 return false;
 
             });
-
-           
-
         }
 
         //Scans an string and lists all found tokens which follow the 

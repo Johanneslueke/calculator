@@ -11,6 +11,7 @@ namespace Calculater_eXtreme
     class RuleTable : IDictionary<String,object>
     {
         private OrderedDictionary Table  = new OrderedDictionary();
+
         public delegate object fundamental(params object[] condition);
 
         public RuleTable()
