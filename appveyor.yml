@@ -1,0 +1,8 @@
+version: 1.0.1{build}
+image: Visual Studio 2017
+configuration: Debug
+platform: Any CPU
+before_build:
+- ps: nuget restore
+build:
+  verbosity: minimal
