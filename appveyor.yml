@@ -4,5 +4,10 @@ configuration: Debug
 platform: Any CPU
 before_build:
 - ps: nuget restore
+build_script:
+  - choco install "msbuild-sonarqube-runner" -y
+  - MSBuild.SonarQube.Runner.exe begin /k:"Johanneslueke_calculator" /d:sonar.organization="johanneslueke-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="f49295531b5e4fabd39b3146dd1f58eb0259a6bc"
+  - MsBuild.exe /t:Rebuild
+  - MSBuild.SonarQube.Runner.exe end /d:sonar.login="f49295531b5e4fabd39b3146dd1f58eb0259a6bc"
 build:
   verbosity: minimal
