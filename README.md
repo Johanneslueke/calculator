@@ -1,4 +1,6 @@
 # calculator
+[![Quality Gate](https://sonarqube.com/api/badges/gate?key=Johanneslueke_calculator)](https://sonarqube.com/dashboard/index/Johanneslueke_calculator)
+
 [![Build status](https://ci.appveyor.com/api/projects/status/nkrs4y3k4rxgnky9/branch/master?svg=true)](https://ci.appveyor.com/project/Johanneslueke/calculator/branch/master)
 [![Coverage Status](https://coveralls.io/repos/github/Johanneslueke/calculator/badge.svg?branch=master)](https://coveralls.io/github/Johanneslueke/calculator?branch=master)
 
